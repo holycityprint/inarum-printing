@@ -1,26 +1,134 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Token warna brand — ORANGE (#FF5C00) */
+@theme {
+  /* Skala brand (50–900). Utama: 600 = #FF5C00 */
+  --color-brand-50:  #FFF4EC;
+  --color-brand-100: #FFE6D6;
+  --color-brand-200: #FFC9AA;
+  --color-brand-300: #FFAA7A;
+  --color-brand-400: #FF8947;
+  --color-brand-500: #FF6F1E;
+  --color-brand-600: #FF5C00; /* warna utama */
+  --color-brand-700: #D64C00;
+  --color-brand-800: #A83B00;
+  --color-brand-900: #6F2600;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.06);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+:root { color-scheme: light; }
+html, body { height: 100%; }
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: #fff;
+  color: #0b1220;
+}
+
+/* Util tipografi & layout */
+.text-balance { text-wrap: balance; }
+.measure { max-width: 65ch; }
+.tracking-tightest { letter-spacing: -0.04em; }
+.bullets { list-style: disc; padding-left: 1.125rem; }
+
+.container-wide {
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+@media (min-width: 768px) { .container-wide { padding-inline: 2rem; } }
+
+.container-bleed { width: 100%; margin-left: 50%; right: 50%; translate: -50% 0; }
+
+/* Komponen util (ingat: variants ditulis sebagai selector biasa di v4) */
+.card { @apply rounded-lg bg-white shadow-md shadow-black/5 border border-black/5; }
+.badge { @apply inline-flex items-center rounded-full bg-brand-50 text-brand-700 px-2.5 py-0.5 text-xs font-medium border border-brand-100; }
+
+.btn { @apply inline-flex items-center justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium transition-colors duration-200; }
+.btn-primary { @apply bg-brand-600 text-white; }
+.btn-outline { @apply border-brand-600 text-brand-800 bg-white; }
+.btn:hover { @apply opacity-90; }
+.btn:focus-visible { @apply outline-none ring-2 ring-brand-300; }
+.btn:disabled { @apply opacity-50 cursor-not-allowed; }
+
+/* Sembunyikan scrollbar horizontal opsional */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Efek ketik (TypingText) */
+@keyframes typing-caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.typing-caret::after {
+  content: '▍';
+  margin-left: 0.125rem;
+  color: var(--color-brand-600);
+  animation: typing-caret-blink 1s step-end infinite;
+}
+
+/* ScrollReveal — aman untuk Tailwind v4 */
+.reveal {
+  @apply opacity-0 transition-all duration-700 ease-out;
+  transform: translate3d(0, 0, 0);
+}
+.reveal.in-view { @apply opacity-100; }
+
+.reveal-up { @apply translate-y-6; }
+.reveal-down { @apply -translate-y-6; }
+.reveal-left { @apply translate-x-6; }
+.reveal-right { @apply -translate-x-6; }
+.reveal-fade { /* tanpa geser */ }
+
+.reveal-up.in-view,
+.reveal-down.in-view,
+.reveal-left.in-view,
+.reveal-right.in-view {
+  @apply translate-x-0 translate-y-0;
+}
+
+/* Interactive selection (card & pill) */
+.interactive-card { @apply transition-all duration-200 ease-out cursor-pointer select-none; }
+.interactive-card:hover { @apply -translate-y-1 shadow-md; }
+.interactive-card:active { @apply scale-[0.99]; }
+.interactive-card[data-selected='true'] {
+  @apply -translate-y-1 ring-2 ring-brand-400 shadow-lg bg-white;
+  animation: card-pop 220ms ease-out;
+}
+@keyframes card-pop {
+  0% { transform: translateY(0) scale(1); }
+  60% { transform: translateY(-4px) scale(1.02); }
+  100% { transform: translateY(-4px) scale(1); }
+}
+
+.pill {
+  @apply whitespace-nowrap rounded-full bg-white border border-brand-100
+         px-3 py-1 text-xs sm:text-sm text-brand-800 transition-all duration-200;
+}
+.pill:hover { @apply bg-brand-50; }
+.pill:active { @apply scale-[0.98]; }
+.pill[data-selected='true'] {
+  @apply bg-brand-600 text-white border-brand-600 shadow;
+  transform: translateY(-2px);
+  animation: pill-pop 160ms ease-out;
+}
+@keyframes pill-pop {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-2px); }
+}
+
+/* Reduce motion: nonaktifkan animasi bila user prefer reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .interactive-card,
+  .pill {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }

@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: inarum/web:latest
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+    ports:
+      - "3000:3000" # http://localhost:3000
+    restart: unless-stopped
+    healthcheck:
+      # Pakai 127.0.0.1 (IPv4) biar akurat
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://127.0.0.1:3000', r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    depends_on:
+      web:
+        condition: service_healthy
+    command: tunnel --no-autoupdate --edge-ip-version 4 --loglevel info --url http://web:3000
+    restart: unless-stopped
