@@ -1,4 +1,4 @@
-import { SITE } from '@/lib/config'
+import { SITE } from '../lib/config'
 
 export function SeoJsonLd() {
   let image: string | undefined

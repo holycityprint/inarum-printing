@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { SITE } from '../lib/config'
 
-// Fallback gambar (harus ada file-nya di /public/gallery)
+// Fallback gambar berdasarkan judul
 const FALLBACK_BY_TITLE: Record<string, string> = {
   'Cetak Banner & Spanduk': '/gallery/svc-banner.webp',
   'Sablon Kaos': '/gallery/svc-kaos.webp',
@@ -16,7 +16,6 @@ const FALLBACK_BY_TITLE: Record<string, string> = {
   'Totebag Custom': '/gallery/svc-totebag.webp',
 }
 
-// Fallback by index (untuk jaga-jaga kalau judul berubah)
 const FALLBACK_BY_INDEX = [
   '/gallery/svc-banner.webp',
   '/gallery/svc-kaos.webp',
@@ -30,8 +29,8 @@ const FALLBACK_BY_INDEX = [
 ]
 
 function pickImage(title: string, explicit: unknown, idx: number) {
-  const val = typeof explicit === 'string' ? explicit.trim() : ''
-  if (val) return val
+  const v = typeof explicit === 'string' ? explicit.trim() : ''
+  if (v) return v
   return FALLBACK_BY_TITLE[title] || FALLBACK_BY_INDEX[idx] || ''
 }
 
@@ -45,17 +44,12 @@ const Services = () => {
     <section id="layanan" className="container mx-auto py-12">
       <header className="mb-6">
         <h2 className="text-3xl font-bold tracking-tight">Layanan</h2>
-        <p className="text-muted-foreground mt-1">
-          Pilih layanan cetak sesuai kebutuhanmu.
-        </p>
+        <p className="text-muted-foreground mt-1">Pilih layanan cetak sesuai kebutuhanmu.</p>
       </header>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((s, i) => (
-          <article
-            key={i}
-            className="card p-0 overflow-hidden bg-white/70 dark:bg-neutral-900/50"
-          >
+          <article key={i} className="card p-0 overflow-hidden bg-white/70 dark:bg-neutral-900/50">
             <div className="aspect-[4/3] bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
               {s.image ? (
                 <Image
@@ -67,12 +61,9 @@ const Services = () => {
                   loading="lazy"
                 />
               ) : (
-                <span className="text-5xl" aria-hidden="true">
-                  {s.icon}
-                </span>
+                <span className="text-5xl" aria-hidden="true">{s.icon}</span>
               )}
             </div>
-
             <div className="p-4">
               <h3 className="font-semibold text-lg">{s.title}</h3>
               <p className="text-sm text-muted-foreground mt-1">{s.desc}</p>
