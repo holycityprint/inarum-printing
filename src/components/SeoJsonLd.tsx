@@ -15,15 +15,21 @@ export function SeoJsonLd() {
     email: SITE.email || undefined,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: SITE.address,
-      addressLocality: 'Bandung',
+      streetAddress: 'Taman Kopo Katapang Blk. P5 No.36, Pangauban',
+      addressLocality: 'Kabupaten Bandung',
       addressRegion: 'Jawa Barat',
-      addressCountry: 'ID'
+      postalCode: '40921',
+      addressCountry: 'ID',
     },
     openingHours: SITE.hours,
-    sameAs: Object.values(SITE.social).filter(Boolean)
+    sameAs: Object.values(SITE.social).filter(Boolean),
   }
   if (image) data.image = image
 
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  )
 }
